@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'polls',
     'rest_framework',
+    'django_rq',
 ]
 
 MIDDLEWARE = [
@@ -85,6 +86,17 @@ CACHES = {
         },
         "KEY_PREFIX": "covid19"
     }
+}
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': '127.0.0.1',
+        'PORT': 6379,
+        'DB': 0,
+        'PASSWORD': '',
+        'DEFAULT_TIMEOUT': 360,
+    },
+    "DEFAULT_RESULT_TTL": 5000,
 }
 
 # Database

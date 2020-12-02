@@ -53,7 +53,7 @@ class Deaths(APIView):
         except Exception as e:
             logger.error("api/Deaths failed - Error: {}".format(str(e)))
             raise APIException(str(e))
-        return Response({"success": True, "data": data})
+        return Response({"success": True, "msg": "{} Deaths {}".format(country_code, data)})
 
 
 class Hello(APIView):

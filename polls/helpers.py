@@ -23,8 +23,15 @@ def fetchCovidCases(*args, **kwrgs):
     resp = requests.get(url)
     print("status ".format(resp.status_code))
     if resp.status_code == 200:
-        data = resp.json()["Countries"]
-        for cdata in data:
+        # global  data
+        global_data = resp.json()["Global"]
+        global_cases_key = "polls.cases.country.code:{}".format("TOTAL")
+        global_deaths_key = "polls.deaths.country.code:{}".format("TOTAL")
+        cache.set(global_cases_key, global_data["TotalConfirmed"])
+        cache.set(global_deaths_key, global_data["TotalDeaths"])
+        # country wise data
+        countries_data = resp.json()["Countries"]
+        for cdata in countries_data:
             country_code = cdata["CountryCode"].encode("utf-8")
             total_cases = cdata["TotalConfirmed"]
             total_deaths = cdata["TotalDeaths"]
@@ -37,7 +44,7 @@ def fetchCovidCases(*args, **kwrgs):
             cache.set(redis_key, total_cases)
             redis_key = "polls.deaths.country.code:{}".format(country_code)
             cache.set(redis_key, total_deaths)
-        # logger.info("covid updates successfully fetched {}".format(resp.json()))
+        logger.info("covid updates successfully fetched")
     else:
         logger.info(
             "error while fetching covid updates status {} err {}".format(
