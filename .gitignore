@@ -35,6 +35,7 @@ var/
 *.egg
 
 # virtualenv
+cenv/
 venv/
 ENV/
 
