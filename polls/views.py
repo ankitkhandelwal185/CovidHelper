@@ -21,6 +21,7 @@ class Cases(APIView):
         return False
 
     def get(self, request, country_code):
+        country_code = country_code.upper()
         logger.info("Calling api/Cases, country_code: {}".format(country_code))
         try:
             redis_key = "polls.cases.country.code:{}".format(country_code)
@@ -44,6 +45,7 @@ class Deaths(APIView):
         return False
 
     def get(self, request, country_code):
+        country_code = country_code.upper()
         logger.info("Calling api/Deaths, country_code: {}".format(country_code))
         try:
             redis_key = "polls.deaths.country.code:{}".format(country_code)

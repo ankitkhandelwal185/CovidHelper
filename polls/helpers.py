@@ -2,15 +2,20 @@ from datetime import datetime
 from django.conf import settings
 from django.core.cache import cache
 from django.http import Http404
-
 import requests
 import json
+import os
+import sys
 import structlog
-
 logger = structlog.get_logger()
 
 
+
 def fetchCovidCases(*args, **kwrgs):
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(BASE_DIR)
+    from django.core.wsgi import get_wsgi_application
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "covid19.settings")
     start_datetime = "2020-03-01T00:00:00Z"
     curr_datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     logger.info("fetch_covid_cases for time: {}".format(curr_datetime))
@@ -32,7 +37,7 @@ def fetchCovidCases(*args, **kwrgs):
             cache.set(redis_key, total_cases)
             redis_key = "polls.deaths.country.code:{}".format(country_code)
             cache.set(redis_key, total_deaths)
-        logger.info("covid updates successfully fetched {}".format(resp.data))
+        # logger.info("covid updates successfully fetched {}".format(resp.json()))
     else:
         logger.info(
             "error while fetching covid updates status {} err {}".format(

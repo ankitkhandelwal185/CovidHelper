@@ -3,3 +3,4 @@ django-redis
 Django~=1.11
 structlog~=16.1.0
 requests~=2.23.0
+psycopg2
