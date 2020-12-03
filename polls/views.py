@@ -53,6 +53,13 @@ class Cases(APIView):
 
 
 class Stats(APIView):
+    stat_name = {
+        'confirmed': 'confirmed cases',
+        'deaths': 'confirmed deaths',
+        'active': 'active cases',
+        'recovered': 'recovered cases'
+    }
+
     def get(self):
         pass
 
