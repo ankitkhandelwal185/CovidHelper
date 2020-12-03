@@ -37,7 +37,9 @@ class Cases(APIView):
         data = request.data
         country_code = data.get("country_code").upper()
         type = data.get("type")
-        logger.info("Calling api/Cases, country_code: {} and type {}".format(country_code, type))
+        logger.info(
+            "Calling api/Cases, country_code: {} and type {}".format(country_code, type)
+        )
         try:
             if type == "active":
                 redis_key = "polls.cases.country.code:{}".format(country_code)
@@ -48,16 +50,19 @@ class Cases(APIView):
             logger.error("api/cases failed - Error: {}".format(str(e)))
             raise APIException(str(e))
         return Response(
-            {"success": True, "msg": "{} {} {}".format(country_code, self.stat_name[type], data)}
+            {
+                "success": True,
+                "msg": "{} {} {}".format(country_code, self.stat_name[type], data),
+            }
         )
 
 
 class Stats(APIView):
     stat_name = {
-        'confirmed': 'confirmed cases',
-        'deaths': 'confirmed deaths',
-        'active': 'active cases',
-        'recovered': 'recovered cases'
+        "confirmed": "confirmed cases",
+        "deaths": "confirmed deaths",
+        "active": "active cases",
+        "recovered": "recovered cases",
     }
 
     def get(self):
@@ -65,9 +70,12 @@ class Stats(APIView):
 
     def post(self, request):
         data = request.data
+        logger.info("data {}".format(data))
         country_code = data.get("country_code").upper()
         type = data.get("type")
-        logger.info("Calling api/Cases, country_code: {} and type {}".format(country_code, type))
+        logger.info(
+            "Calling api/Cases, country_code: {} and type {}".format(country_code, type)
+        )
         try:
             if type == "active":
                 redis_key = "polls.cases.country.code:{}".format(country_code)
@@ -77,9 +85,11 @@ class Stats(APIView):
         except Exception as e:
             logger.error("api/cases failed - Error: {}".format(str(e)))
             raise APIException(str(e))
-        return Response(
-            {"success": True, "msg": "{} {} {}".format(country_code, self.stat_name[type], data)}
-        )
+        return Response({"actions": [
+                {"say": "{} {} {}".format(country_code, self.stat_name[type], data)},
+                {"listen": True},
+            ]
+        })
 
 
 class Hello(APIView):
