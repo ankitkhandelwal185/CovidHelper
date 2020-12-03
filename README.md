@@ -2,15 +2,15 @@ This project is about to to get current total no of covid active cases in a coun
 
 Project architecture
  
- ![Alt text](/home/kuliza-431/Downloads/image1.png?raw=true)
+ ![](image1.png?raw=true)
 
 Deployed on AWS EC2 Instance
 
 
 Prerequisite  
-Clone repo and create a virtual env
-install packages from requirements.txt
-Change the user and password of db accordingly in settings.py
+Clone repo and create a virtual env  
+install packages from requirements.txt  
+Change the user and password of db accordingly in settings.py  
 
 To make db migrations, run these commands
 python manage.py migrate
