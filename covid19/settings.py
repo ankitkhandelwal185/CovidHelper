@@ -74,7 +74,7 @@ WSGI_APPLICATION = 'covid19.wsgi.application'
 
 
 # Cache time to live is 60 minutes.
-CACHE_TTL = 60 * 60
+CACHE_TTL = 60 * 60 * 12
 
 
 CACHES = {
