@@ -52,6 +52,30 @@ class Cases(APIView):
         )
 
 
+class Stats(APIView):
+    def get(self):
+        pass
+
+
+    def post(self, request):
+        data = request.data
+        country_code = data.get("country_code").upper()
+        type = data.get("type")
+        logger.info("Calling api/Cases, country_code: {} and type {}".format(country_code, type))
+        try:
+            if type == "active":
+                redis_key = "polls.cases.country.code:{}".format(country_code)
+            elif type == "deaths":
+                redis_key = "polls.deaths.country.code:{}".format(country_code)
+            data = cache.get(redis_key)
+        except Exception as e:
+            logger.error("api/cases failed - Error: {}".format(str(e)))
+            raise APIException(str(e))
+        return Response(
+            {"success": True, "msg": "{} {} {}".format(country_code, self.stat_name[type], data)}
+        )
+
+
 class Hello(APIView):
     def get(self, request):
         return Response({"success": True})
