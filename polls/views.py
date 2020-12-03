@@ -33,27 +33,23 @@ class Cases(APIView):
             {"success": True, "msg": "{} Active Case {}".format(country_code, data)}
         )
 
-
-class Deaths(APIView):
-    def searchCode(self, code):
-        # JSON file
-        data = open("countrycode.json", "r")
-        jsonList = json.loads(data)
-        for jsonObj in jsonList:
-            if code.lower() == jsonObj["code"].lower():
-                return True
-        return False
-
-    def get(self, request, country_code):
-        country_code = country_code.upper()
-        logger.info("Calling api/Deaths, country_code: {}".format(country_code))
+    def post(self, request):
+        data = request.data
+        country_code = data.get("country_code").upper()
+        type = data.get("type")
+        logger.info("Calling api/Cases, country_code: {} and type {}".format(country_code, type))
         try:
-            redis_key = "polls.deaths.country.code:{}".format(country_code)
+            if type == "active":
+                redis_key = "polls.cases.country.code:{}".format(country_code)
+            elif type == "deaths":
+                redis_key = "polls.deaths.country.code:{}".format(country_code)
             data = cache.get(redis_key)
         except Exception as e:
-            logger.error("api/Deaths failed - Error: {}".format(str(e)))
+            logger.error("api/cases failed - Error: {}".format(str(e)))
             raise APIException(str(e))
-        return Response({"success": True, "msg": "{} Deaths {}".format(country_code, data)})
+        return Response(
+            {"success": True, "msg": "{} {} {}".format(country_code, self.stat_name[type], data)}
+        )
 
 
 class Hello(APIView):

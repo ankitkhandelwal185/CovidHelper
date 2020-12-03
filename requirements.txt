@@ -6,3 +6,4 @@ requests~=2.23.0
 psycopg2
 django-rq
 rq-scheduler
+iso3166
