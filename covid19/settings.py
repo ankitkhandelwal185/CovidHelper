@@ -114,6 +114,9 @@ DATABASES = {
 }
 
 
+# Base url
+COVID_BASE_URL = "https://api.covid19api.com"
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

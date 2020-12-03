@@ -63,7 +63,6 @@ class Stats(APIView):
     def get(self):
         pass
 
-
     def post(self, request):
         data = request.data
         country_code = data.get("country_code").upper()

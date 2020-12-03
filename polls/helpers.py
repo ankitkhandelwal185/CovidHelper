@@ -10,14 +10,13 @@ import structlog
 logger = structlog.get_logger()
 
 
-
 def fetchCovidCases(*args, **kwrgs):
-    # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # sys.path.append(BASE_DIR)
-    # from django.core.wsgi import get_wsgi_application
-    # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "covid19.settings")
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(BASE_DIR)
+    from django.core.wsgi import get_wsgi_application
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "covid19.settings")
     logger.info("fetch_covid_cases called")
-    url = "https://api.covid19api.com/summary"
+    url = "{}/summary".format(settings.COVID_BASE_URL)
     try:
         resp = requests.get(url)
         resp_json = resp.json()
@@ -26,8 +25,8 @@ def fetchCovidCases(*args, **kwrgs):
             global_data = resp_json["Global"]
             global_cases_key = "polls.cases.country.code:{}".format("TOTAL")
             global_deaths_key = "polls.deaths.country.code:{}".format("TOTAL")
-            cache.set(global_cases_key, global_data["TotalConfirmed"])
-            cache.set(global_deaths_key, global_data["TotalDeaths"])
+            cache.set(global_cases_key, global_data["TotalConfirmed"], settings.CACHE_TTL)
+            cache.set(global_deaths_key, global_data["TotalDeaths"], settings.CACHE_TTL)
             # country wise data
             countries_data = resp_json["Countries"]
             for cdata in countries_data:
@@ -39,10 +38,10 @@ def fetchCovidCases(*args, **kwrgs):
                         country_code, total_cases, total_deaths
                     )
                 )
-                redis_key = "polls.cases.country.code:{}".format(country_code)
-                cache.set(redis_key, total_cases)
-                redis_key = "polls.deaths.country.code:{}".format(country_code)
-                cache.set(redis_key, total_deaths)
+                cases_redis_key = "polls.cases.country.code:{}".format(country_code)
+                deaths_redis_key = "polls.deaths.country.code:{}".format(country_code)
+                cache.set(cases_redis_key, total_cases, settings.CACHE_TTL)
+                cache.set(deaths_redis_key, total_deaths, settings.CACHE_TTL)
             logger.info("covid updates successfully fetched")
         else:
             logger.info(
@@ -56,3 +55,7 @@ def fetchCovidCases(*args, **kwrgs):
                 resp.status_code, resp.text
             )
         )
+
+
+if __name__ == '__main__':
+    fetchCovidCases()
