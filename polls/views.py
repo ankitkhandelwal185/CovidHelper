@@ -77,16 +77,11 @@ class Stats(APIView):
                 request.data.get("Field_type_Value"),
             )
         )
-        logger.info(
-            "Calling api/Cases, country_code: {} and type {}".format(
-                country_code, stat_type
-            )
-        )
         try:
             country_code_val = request.data.get("Field_country_code_Value", None)
             stat_type = request.data.get("Field_type_Value", None)
             if stat_type is None or country_code_val is None:
-                msg = 'Sorry, I do not understand. Can you repeat?'
+                msg = "Sorry, I do not understand. Can you repeat?"
             country_code = countries.get(country_code_val).alpha2
             if stat_type == "active":
                 redis_key = "polls.cases.country.code:{}".format(country_code)
@@ -98,7 +93,7 @@ class Stats(APIView):
                     country_code_val, self.stat_name[stat_type], redis_value
                 )
             else:
-                msg = "hmm something went wrong, I am working on it"
+                msg = "hmm something went wrong, I am working on it."
         except Exception as e:
             logger.error("api/cases failed - Error: {}".format(str(e)))
             raise APIException(str(e))
