@@ -1,5 +1,6 @@
 from django.core.cache import cache
 from django.http import Http404
+from iso3166 import countries
 from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -69,27 +70,33 @@ class Stats(APIView):
         pass
 
     def post(self, request):
-        data = request.data
-        logger.info("data {}".format(data))
-        country_code = data.get("country_code").upper()
-        type = data.get("type")
         logger.info(
-            "Calling api/Cases, country_code: {} and type {}".format(country_code, type)
+            "data type {} ----------- {} {}".format(
+                request.data,
+                request.data.get("Field_country_code_Value"),
+                request.data.get("Field_type_Value"),
+            )
+        )
+        country_code = request.data.get("Field_country_code_Value")
+        stat_type = request.data.get("Field_type_Value")
+        logger.info(
+            "Calling api/Cases, country_code: {} and type {}".format(
+                country_code, stat_type
+            )
         )
         try:
-            if type == "active":
+            if stat_type == "active":
                 redis_key = "polls.cases.country.code:{}".format(country_code)
-            elif type == "deaths":
+            elif stat_type == "deaths":
                 redis_key = "polls.deaths.country.code:{}".format(country_code)
-            data = cache.get(redis_key)
+            redis_value = cache.get(redis_key)
+            msg = "{} {} {}".format(
+                country_code, self.stat_name[stat_type], redis_value
+            )
         except Exception as e:
             logger.error("api/cases failed - Error: {}".format(str(e)))
             raise APIException(str(e))
-        return Response({"actions": [
-                {"say": "{} {} {}".format(country_code, self.stat_name[type], data)},
-                {"listen": True},
-            ]
-        })
+        return Response({"actions": [{"say": msg}, {"listen": True}]})
 
 
 class Hello(APIView):
