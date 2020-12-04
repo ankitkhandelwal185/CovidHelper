@@ -89,6 +89,8 @@ class Stats(APIView):
                 redis_key = "polls.cases.country.code:{}".format(country_code)
             elif stat_type == "deaths":
                 redis_key = "polls.deaths.country.code:{}".format(country_code)
+            elif stat_type == "recovered":
+                redis_key = "polls.recovered.country.code:{}".format(country_code)
             if redis_key is not None:
                 redis_value = cache.get(redis_key)
                 msg = "{} {} {}".format(
