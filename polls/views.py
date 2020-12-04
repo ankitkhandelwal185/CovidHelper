@@ -78,6 +78,8 @@ class Stats(APIView):
             )
         )
         try:
+            redis_key = None
+            msg = None
             country_code_val = request.data.get("Field_country_code_Value", None)
             stat_type = request.data.get("Field_type_Value", None)
             if stat_type is None or country_code_val is None:
