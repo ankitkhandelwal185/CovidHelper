@@ -92,7 +92,7 @@ class Stats(APIView):
                 redis_key = "polls.deaths.country.code:{}".format(country_code)
             redis_value = cache.get(redis_key)
             msg = "{} {} {}".format(
-                country_code, self.stat_name[stat_type], redis_value
+                country_code_val, self.stat_name[stat_type], redis_value
             )
         except Exception as e:
             logger.error("api/cases failed - Error: {}".format(str(e)))
