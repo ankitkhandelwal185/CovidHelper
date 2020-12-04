@@ -77,7 +77,8 @@ class Stats(APIView):
                 request.data.get("Field_type_Value"),
             )
         )
-        country_code = request.data.get("Field_country_code_Value")
+        country_code_val = request.data.get("Field_country_code_Value")
+        country_code = countries.get(country_code_val).alpha2
         stat_type = request.data.get("Field_type_Value")
         logger.info(
             "Calling api/Cases, country_code: {} and type {}".format(
