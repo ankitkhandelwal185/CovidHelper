@@ -84,20 +84,21 @@ class Stats(APIView):
             stat_type = request.data.get("Field_type_Value", None)
             if stat_type is None or country_code_val is None:
                 msg = "Sorry, I do not understand. Can you repeat?"
-            country_code = countries.get(country_code_val).alpha2
-            if stat_type == "active":
-                redis_key = "polls.cases.country.code:{}".format(country_code)
-            elif stat_type == "deaths":
-                redis_key = "polls.deaths.country.code:{}".format(country_code)
-            elif stat_type == "recovered":
-                redis_key = "polls.recovered.country.code:{}".format(country_code)
-            if redis_key is not None:
-                redis_value = cache.get(redis_key)
-                msg = "{} {} {}".format(
-                    country_code_val, self.stat_name[stat_type], redis_value
-                )
-            else:
-                msg = "hmm something went wrong, I am working on it."
+            if msg is None:
+                country_code = countries.get(country_code_val).alpha2
+                if stat_type == "active":
+                    redis_key = "polls.cases.country.code:{}".format(country_code)
+                elif stat_type == "deaths":
+                    redis_key = "polls.deaths.country.code:{}".format(country_code)
+                elif stat_type == "recovered":
+                    redis_key = "polls.recovered.country.code:{}".format(country_code)
+                if redis_key is None:
+                    msg = "hmm something went wrong, I am working on it."
+                else:
+                    redis_value = cache.get(redis_key)
+                    msg = "{} {} {}".format(
+                        country_code_val, self.stat_name[stat_type], redis_value
+                    )
         except Exception as e:
             logger.error("api/cases failed - Error: {}".format(str(e)))
             raise APIException(str(e))
