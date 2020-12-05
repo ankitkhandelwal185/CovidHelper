@@ -72,7 +72,6 @@ class Stats(APIView):
     def post(self, request):
         logger.info(
             "data {} {} {}".format(
-                request.data,
                 request.data.get("Field_country_code_Value", None),
                 request.data.get("Field_state_name_Value", None),
                 request.data.get("Field_type_Value", None),
