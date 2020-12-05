@@ -73,8 +73,8 @@ class Stats(APIView):
         logger.info(
             "data type {} ----------- {} {}".format(
                 request.data,
-                request.data.get("Field_country_code_Value"),
-                request.data.get("Field_type_Value"),
+                request.data.get("Field_country_code_Value", None),
+                request.data.get("Field_type_Value", None),
             )
         )
         try:
@@ -82,23 +82,50 @@ class Stats(APIView):
             msg = None
             country_code_val = request.data.get("Field_country_code_Value", None)
             stat_type = request.data.get("Field_type_Value", None)
-            if stat_type is None or country_code_val is None:
+            state_name_val = request.data.get("Field_state_name_Value", None)
+            if stat_type is None or (
+                country_code_val is None and state_name_val is None
+            ):
                 msg = "Sorry, I do not understand. Can you repeat?"
             if msg is None:
-                country_code = countries.get(country_code_val).alpha2
-                if stat_type == "confirmed":
-                    redis_key = "polls.cases.country.code:{}".format(country_code)
-                elif stat_type == "deaths":
-                    redis_key = "polls.deaths.country.code:{}".format(country_code)
-                elif stat_type == "recovered":
-                    redis_key = "polls.recovered.country.code:{}".format(country_code)
-                if redis_key is None:
-                    msg = "hmm something went wrong, I am working on it."
-                else:
-                    redis_value = cache.get(redis_key)
-                    msg = "{} {} {}".format(
-                        country_code_val, self.stat_name[stat_type], redis_value
-                    )
+                if country_code_val:
+                    country_code = countries.get(country_code_val).alpha2
+                    if stat_type == "confirmed":
+                        redis_key = "polls.cases.country.code:{}".format(country_code)
+                    elif stat_type == "deaths":
+                        redis_key = "polls.deaths.country.code:{}".format(country_code)
+                    elif stat_type == "recovered":
+                        redis_key = "polls.recovered.country.code:{}".format(
+                            country_code
+                        )
+                    if redis_key is None:
+                        msg = "hmm something went wrong, I am working on it."
+                    else:
+                        redis_value = cache.get(redis_key)
+                        msg = "{} {} {}".format(
+                            country_code_val, self.stat_name[stat_type], redis_value
+                        )
+                if state_name_val:
+                    if stat_type == "confirmed":
+                        redis_key = "polls.cases.country.state.code:{}".format(
+                            state_name_val
+                        )
+                    elif stat_type == "deaths":
+                        redis_key = "polls.deaths.country.state.code:{}".format(
+                            state_name_val
+                        )
+                    elif stat_type == "recovered":
+                        redis_key = "polls.recovered.country.state.code:{}".format(
+                            state_name_val
+                        )
+                    if redis_key is None:
+                        msg = "hmm something went wrong, I am working on it."
+                    else:
+                        redis_value = cache.get(redis_key)
+                        msg = "{} {} {}".format(
+                            state_name_val, self.stat_name[stat_type], redis_value
+                        )
+
         except Exception as e:
             logger.error("api/cases failed - Error: {}".format(str(e)))
             raise APIException(str(e))
