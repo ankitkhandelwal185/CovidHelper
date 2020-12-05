@@ -116,6 +116,8 @@ DATABASES = {
 
 # Base url
 COVID_BASE_URL = "https://api.covid19api.com"
+COVID_INDIA_BASE_URL = "https://api.covid19india.org"
+COVID_ROOT_BASE_URL = "https://api.rootnet.in"
 
 
 # Password validation

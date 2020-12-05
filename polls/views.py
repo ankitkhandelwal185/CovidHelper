@@ -105,6 +105,54 @@ class Stats(APIView):
         return Response({"actions": [{"say": msg}, {"listen": True}]})
 
 
+class StateStats(APIView):
+    stat_name = {
+        "confirmed": "confirmed cases",
+        "deaths": "confirmed deaths",
+        "active": "active cases",
+        "recovered": "recovered cases",
+    }
+
+    def post(self, request):
+        logger.info(
+            "data type {} ----------- {} {}".format(
+                request.data,
+                request.data.get("Field_state_name_Value"),
+                request.data.get("Field_type_Value"),
+            )
+        )
+        try:
+            redis_key = None
+            msg = None
+            state_name_val = request.data.get("Field_state_name_Value", None)
+            stat_type = request.data.get("Field_type_Value", None)
+            if stat_type is None or state_name_val is None:
+                msg = "Sorry, I do not understand. Can you repeat?"
+            if msg is None:
+                if stat_type == "confirmed":
+                    redis_key = "polls.cases.country.state.code:{}".format(
+                        state_name_val
+                    )
+                elif stat_type == "deaths":
+                    redis_key = "polls.deaths.country.state.code:{}".format(
+                        state_name_val
+                    )
+                elif stat_type == "recovered":
+                    redis_key = "polls.recovered.country.state.code:{}".format(
+                        state_name_val
+                    )
+                if redis_key is None:
+                    msg = "hmm something went wrong, I am working on it."
+                else:
+                    redis_value = cache.get(redis_key)
+                    msg = "{} {} {}".format(
+                        state_name_val, self.stat_name[stat_type], redis_value
+                    )
+        except Exception as e:
+            pass
+        return Response({"actions": [{"say": msg}, {"listen": True}]})
+
+
 class Hello(APIView):
     def get(self, request):
         return Response({"success": True})

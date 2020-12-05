@@ -14,16 +14,24 @@ class PollsConfig(AppConfig):
     name = 'polls'
     def ready(self):
         if os.environ.get("RUN_MAIN", None) != "true":
-            from .helpers import fetchCovidCases
+            from .helpers import fetchCovidCasesCountryWise,fetchCovidCasesStateWise
             logger.info("Scheduling")
             scheduler = django_rq.get_scheduler("default")
             # Delete any existing jobs in scheduler
             for job in scheduler.get_jobs():
                 job.delete()
-            # run every minute
             scheduler.schedule(
                 datetime.utcnow(),
-                func=fetchCovidCases,
+                func=fetchCovidCasesCountryWise,
+                args=[],
+                kwargs={},
+                interval=3600,
+                repeat=None,
+                meta={"foo": "bar"},
+            )
+            scheduler.schedule(
+                datetime.utcnow(),
+                func=fetchCovidCasesStateWise,
                 args=[],
                 kwargs={},
                 interval=3600,
