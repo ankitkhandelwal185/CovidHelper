@@ -19,6 +19,10 @@ python manage.py migrate
 django_rq  - a Redis based Python queuing library
 https://github.com/rq/django-rq
 
-api to get total active cases in india
-http://3.138.197.21/polls/cases/in/
+Integrated with Twilio Autopilot for whatsapp, blog link  
+https://www.twilio.com/blog/build-covid-19-bot-python-twilio-autopilot
+
+Postman Collection  
+https://demo.ackodev.com/firefly-ui/#/claims/123572
+
 
