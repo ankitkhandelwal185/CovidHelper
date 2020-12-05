@@ -86,7 +86,7 @@ class Stats(APIView):
                 msg = "Sorry, I do not understand. Can you repeat?"
             if msg is None:
                 country_code = countries.get(country_code_val).alpha2
-                if stat_type == "active":
+                if stat_type == "confirmed":
                     redis_key = "polls.cases.country.code:{}".format(country_code)
                 elif stat_type == "deaths":
                     redis_key = "polls.deaths.country.code:{}".format(country_code)
