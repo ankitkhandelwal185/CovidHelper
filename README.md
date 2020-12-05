@@ -4,6 +4,8 @@ Project architecture
  
  ![](image1.png?raw=true)
 
+ ![](image2.png?raw=true)
+
 Deployed on AWS EC2 Instance
 
 
