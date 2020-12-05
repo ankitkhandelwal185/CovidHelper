@@ -1,6 +1,7 @@
 from django.core.cache import cache
 from django.http import Http404
 from iso3166 import countries
+import humanize
 from rest_framework.exceptions import APIException
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -88,7 +89,7 @@ class Stats(APIView):
             ):
                 msg = "Sorry, I do not understand. Can you repeat?"
             if msg is None:
-                if country_code_val:
+                if country_code_val and state_name_val is None:
                     country_code = countries.get(country_code_val).alpha2
                     if stat_type == "confirmed":
                         redis_key = "polls.cases.country.code:{}".format(country_code)
@@ -101,7 +102,7 @@ class Stats(APIView):
                     if redis_key is None:
                         msg = "hmm something went wrong, I am working on it."
                     else:
-                        redis_value = cache.get(redis_key)
+                        redis_value = humanize.naturalsize(cache.get(redis_key), gnu=True)
                         msg = "{} {} {}".format(
                             country_code_val, self.stat_name[stat_type], redis_value
                         )
@@ -121,7 +122,7 @@ class Stats(APIView):
                     if redis_key is None:
                         msg = "hmm something went wrong, I am working on it."
                     else:
-                        redis_value = cache.get(redis_key)
+                        redis_value = humanize.naturalsize(cache.get(redis_key), gnu=True)
                         msg = "{} {} {}".format(
                             state_name_val, self.stat_name[stat_type], redis_value
                         )
