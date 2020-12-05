@@ -125,10 +125,9 @@ class Stats(APIView):
                         msg = "{} {} {}".format(
                             state_name_val, self.stat_name[stat_type], redis_value
                         )
-
         except Exception as e:
             logger.error("api/cases failed - Error: {}".format(str(e)))
-            raise APIException(str(e))
+            msg = "hmm something went wrong, I am working on it."
         return Response({"actions": [{"say": msg}, {"listen": True}]})
 
 
