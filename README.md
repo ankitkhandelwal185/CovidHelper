@@ -13,10 +13,10 @@ Install Postgesql and Redis
 install packages from requirements.txt  
 Change the user and password of db accordingly in settings.py  
 
-To make db migrations, run these commands
+To make db migrations, run these commands  
 python manage.py migrate
 
-django_rq  - a Redis based Python queuing library
+django_rq  - a Redis based Python queuing library  
 https://github.com/rq/django-rq
 
 Integrated with Twilio Autopilot for whatsapp, blog link  
