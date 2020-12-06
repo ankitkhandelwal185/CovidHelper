@@ -6,7 +6,7 @@ from datetime import datetime
 import django_rq
 import os
 import structlog
-
+from datetime import datetime
 logger = structlog.get_logger()
 
 
@@ -15,7 +15,7 @@ class PollsConfig(AppConfig):
     def ready(self):
         if os.environ.get("RUN_MAIN", None) != "true":
             from .helpers import fetchCovidCasesCountryWise,fetchCovidCasesStateWise
-            logger.info("Scheduling")
+            logger.info(f"Scheduling: curr time {datetime.utcnow()}")
             scheduler = django_rq.get_scheduler("default")
             # Delete any existing jobs in scheduler
             for job in scheduler.get_jobs():
