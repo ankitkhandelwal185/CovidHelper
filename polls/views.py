@@ -91,38 +91,28 @@ class Stats(APIView):
             if msg is None:
                 if country_code_val and state_name_val is None:
                     country_code = countries.get(country_code_val).alpha2
-                    if stat_type == "confirmed":
-                        redis_key = "polls.cases.country.code:{}".format(country_code)
-                    elif stat_type == "deaths":
-                        redis_key = "polls.deaths.country.code:{}".format(country_code)
-                    elif stat_type == "recovered":
-                        redis_key = "polls.recovered.country.code:{}".format(
-                            country_code
-                        )
+                    redis_key = "polls.{}.country.code:{}".format(
+                        stat_type, country_code
+                    )
                     if redis_key is None:
                         msg = "hmm something went wrong, I am working on it."
                     else:
-                        redis_value = humanize.naturalsize(cache.get(redis_key), gnu=True)
+                        redis_value = humanize.naturalsize(
+                            cache.get(redis_key), gnu=True
+                        )
                         msg = "{} {} {}".format(
                             country_code_val, self.stat_name[stat_type], redis_value
                         )
                 if state_name_val:
-                    if stat_type == "confirmed":
-                        redis_key = "polls.cases.country.state.code:{}".format(
-                            state_name_val
-                        )
-                    elif stat_type == "deaths":
-                        redis_key = "polls.deaths.country.state.code:{}".format(
-                            state_name_val
-                        )
-                    elif stat_type == "recovered":
-                        redis_key = "polls.recovered.country.state.code:{}".format(
-                            state_name_val
-                        )
+                    redis_key = "polls.{}.country.state.code:{}".format(
+                        stat_type, state_name_val
+                    )
                     if redis_key is None:
                         msg = "hmm something went wrong, I am working on it."
                     else:
-                        redis_value = humanize.naturalsize(cache.get(redis_key), gnu=True)
+                        redis_value = humanize.naturalsize(
+                            cache.get(redis_key), gnu=True
+                        )
                         msg = "{} {} {}".format(
                             state_name_val, self.stat_name[stat_type], redis_value
                         )
@@ -156,18 +146,9 @@ class StateStats(APIView):
             if stat_type is None or state_name_val is None:
                 msg = "Sorry, I do not understand. Can you repeat?"
             if msg is None:
-                if stat_type == "confirmed":
-                    redis_key = "polls.cases.country.state.code:{}".format(
-                        state_name_val
-                    )
-                elif stat_type == "deaths":
-                    redis_key = "polls.deaths.country.state.code:{}".format(
-                        state_name_val
-                    )
-                elif stat_type == "recovered":
-                    redis_key = "polls.recovered.country.state.code:{}".format(
-                        state_name_val
-                    )
+                redis_key = "polls.{}.country.state.code:{}".format(
+                    stat_type, state_name_val
+                )
                 if redis_key is None:
                     msg = "hmm something went wrong, I am working on it."
                 else:

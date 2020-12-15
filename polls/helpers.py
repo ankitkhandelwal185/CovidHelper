@@ -14,7 +14,6 @@ logger = structlog.get_logger()
 def fetchCovidCasesCountryWise(*args, **kwrgs):
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.append(BASE_DIR)
-    from django.core.wsgi import get_wsgi_application
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "covid19.settings")
     logger.info("fetch_covid_cases_country_wise called")
@@ -25,7 +24,7 @@ def fetchCovidCasesCountryWise(*args, **kwrgs):
         if resp.status_code == 200:
             # global  data
             global_data = resp_json["Global"]
-            global_cases_key = "polls.cases.country.code:{}".format("TOTAL")
+            global_cases_key = "polls.confirmed.country.code:{}".format("TOTAL")
             global_deaths_key = "polls.deaths.country.code:{}".format("TOTAL")
             global_recovered_key = "polls.recovered.country.code:{}".format("TOTAL")
             cache.set(
@@ -43,11 +42,11 @@ def fetchCovidCasesCountryWise(*args, **kwrgs):
                 total_deaths = cdata["TotalDeaths"]
                 total_recovered = cdata["TotalRecovered"]
                 logger.info(
-                    "code {}, total case {}, total deaths {}".format(
+                    "code {}, total confirmed {}, total deaths {}".format(
                         country_code, total_cases, total_deaths, total_recovered
                     )
                 )
-                cases_key = "polls.cases.country.code:{}".format(country_code)
+                cases_key = "polls.confirmed.country.code:{}".format(country_code)
                 deaths_key = "polls.deaths.country.code:{}".format(country_code)
                 recovered_key = "polls.recovered.country.code:{}".format(country_code)
                 cache.set(cases_key, total_cases, settings.CACHE_TTL)
