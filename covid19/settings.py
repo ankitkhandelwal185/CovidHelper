@@ -119,6 +119,9 @@ COVID_BASE_URL = "https://api.covid19api.com"
 COVID_INDIA_BASE_URL = "https://api.covid19india.org"
 COVID_ROOT_BASE_URL = "https://api.rootnet.in"
 
+import sys
+
+TESTING = sys.argv[1:2] == ['test']
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

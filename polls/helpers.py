@@ -1,12 +1,9 @@
-from datetime import datetime
-from django.conf import settings
-from django.core.cache import cache
-from django.http import Http404
-import requests
-import json
 import os
 import sys
+import requests
 import structlog
+from django.conf import settings
+from django.core.cache import cache
 
 logger = structlog.get_logger()
 
@@ -70,7 +67,6 @@ def fetchCovidCasesCountryWise(*args, **kwrgs):
 def fetchCovidCasesStateWise():
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.append(BASE_DIR)
-    from django.core.wsgi import get_wsgi_application
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "covid19.settings")
     logger.info("fetch_covid_cases_state_wise called")
